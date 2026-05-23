@@ -18,6 +18,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -81,8 +82,7 @@ public class GoogleMapsPlaywrightClient {
 		Set<String> skip = skipPlaceIds != null ? skipPlaceIds : Set.of();
 
 		try (Playwright playwright = Playwright.create()) {
-			Browser browser = playwright.chromium().launch(
-					new BrowserType.LaunchOptions().setHeadless(properties.isHeadless()));
+			Browser browser = playwright.chromium().launch(createLaunchOptions());
 			BrowserContext context = browser.newContext(new Browser.NewContextOptions()
 					.setLocale("pt-BR")
 					.setViewportSize(VIEWPORT_WIDTH, VIEWPORT_HEIGHT));
@@ -106,10 +106,20 @@ public class GoogleMapsPlaywrightClient {
 			}
 		}
 		catch (Exception e) {
-			log.error("Erro no Playwright: {}", e.getMessage());
+			log.error("Erro no Playwright: {}", e.getMessage(), e);
 		}
 
 		return results;
+	}
+
+	private BrowserType.LaunchOptions createLaunchOptions() {
+		return new BrowserType.LaunchOptions()
+				.setHeadless(properties.isHeadless())
+				.setArgs(Arrays.asList(
+						"--no-sandbox",
+						"--disable-setuid-sandbox",
+						"--disable-dev-shm-usage",
+						"--disable-gpu"));
 	}
 
 	private void blockHeavyResources(BrowserContext context) {
