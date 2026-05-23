@@ -1,7 +1,7 @@
 package api_search_clients_maps.demo.service;
 
-import api_search_clients_maps.demo.client.GoogleMapsPlaywrightClient;
-import api_search_clients_maps.demo.client.GoogleMapsPlaywrightClient.PlaceDetails;
+import api_search_clients_maps.demo.client.GoogleMapsPlacesClient;
+import api_search_clients_maps.demo.client.GoogleMapsPlacesClient.PlaceDetails;
 import api_search_clients_maps.demo.config.GoogleMapsProperties;
 import api_search_clients_maps.demo.dto.EstablishmentResponse;
 import api_search_clients_maps.demo.model.Establishment;
@@ -31,15 +31,15 @@ public class GoogleMapsScraperService {
 			"Farmácia", "farmacias",
 			"Empresa", "empresas");
 
-	private final GoogleMapsPlaywrightClient playwrightClient;
+	private final GoogleMapsPlacesClient placesClient;
 	private final GoogleMapsProperties properties;
 	private final EstablishmentRepository repository;
 
 	public GoogleMapsScraperService(
-			GoogleMapsPlaywrightClient playwrightClient,
+			GoogleMapsPlacesClient placesClient,
 			GoogleMapsProperties properties,
 			EstablishmentRepository repository) {
-		this.playwrightClient = playwrightClient;
+		this.placesClient = placesClient;
 		this.properties = properties;
 		this.repository = repository;
 	}
@@ -51,14 +51,15 @@ public class GoogleMapsScraperService {
 				: properties.getSearchLocation();
 
 		Set<String> knownPlaceIds = new HashSet<>(repository.findAllGooglePlaceIds());
-		log.info("Playwright — buscas perto de '{}' ({} já cadastrados no banco)", searchLocation, knownPlaceIds.size());
+		log.info("Google Places API — buscas perto de '{}' ({} já cadastrados)", searchLocation, knownPlaceIds.size());
 
 		Map<String, PlaceDetails> scraped = new LinkedHashMap<>();
-		for (PlaceDetails place : playwrightClient.searchAll(CATEGORY_SEARCHES, searchLocation, knownPlaceIds)) {
+		for (PlaceDetails place : placesClient.searchAll(
+				CATEGORY_SEARCHES, searchLocation, latitude, longitude, radiusMeters, knownPlaceIds)) {
 			putIfAbsentByAddress(scraped, place);
 		}
 
-		log.info("Novos lugares extraídos nesta execução: {}", scraped.size());
+		log.info("Lugares retornados pela API (após dedupe): {}", scraped.size());
 
 		List<EstablishmentResponse> saved = new ArrayList<>();
 		int skipped = 0;

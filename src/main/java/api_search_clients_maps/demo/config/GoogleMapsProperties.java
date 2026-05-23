@@ -5,15 +5,20 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "google.maps")
 public class GoogleMapsProperties {
 
+	private String apiKey = "";
 	private double defaultLatitude = -23.5505;
 	private double defaultLongitude = -46.6333;
 	private int defaultRadiusMeters = 5000;
 	private String searchLocation = "São Paulo, SP";
-	private int maxPlacesPerSearch = 8;
-	private int maxScrollAttempts = 3;
-	private int actionTimeoutMs = 12_000;
-	private int pauseBetweenActionsMs = 300;
-	private boolean headless = true;
+	private int maxPlacesPerSearch = 20;
+
+	public String getApiKey() {
+		return apiKey;
+	}
+
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
 
 	public double getDefaultLatitude() {
 		return defaultLatitude;
@@ -55,35 +60,4 @@ public class GoogleMapsProperties {
 		this.maxPlacesPerSearch = maxPlacesPerSearch;
 	}
 
-	public int getMaxScrollAttempts() {
-		return maxScrollAttempts;
-	}
-
-	public void setMaxScrollAttempts(int maxScrollAttempts) {
-		this.maxScrollAttempts = maxScrollAttempts;
-	}
-
-	public int getActionTimeoutMs() {
-		return actionTimeoutMs;
-	}
-
-	public void setActionTimeoutMs(int actionTimeoutMs) {
-		this.actionTimeoutMs = actionTimeoutMs;
-	}
-
-	public int getPauseBetweenActionsMs() {
-		return pauseBetweenActionsMs;
-	}
-
-	public void setPauseBetweenActionsMs(int pauseBetweenActionsMs) {
-		this.pauseBetweenActionsMs = pauseBetweenActionsMs;
-	}
-
-	public boolean isHeadless() {
-		return headless;
-	}
-
-	public void setHeadless(boolean headless) {
-		this.headless = headless;
-	}
 }

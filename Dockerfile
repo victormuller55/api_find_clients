@@ -8,16 +8,9 @@ COPY .mvn .mvn
 COPY src src
 RUN chmod +x mvnw && ./mvnw clean package -DskipTests
 
-# Estágio 2: runtime com Chromium e dependências do Playwright (obrigatório para scraping)
-FROM mcr.microsoft.com/playwright/java:v1.50.0-noble
+# Estágio 2: runtime leve (só HTTP — Google Places API)
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
-
-# Browsers já vêm na imagem; não baixar de novo no startup
-ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-
 COPY --from=build /app/target/*.jar app.jar
-
 EXPOSE 8080
-
-# Playwright + Chromium precisam de mais memória que 256m
-ENTRYPOINT ["java", "-Xmx768m", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Xmx512m", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]

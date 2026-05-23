@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
 		"name": "API Search Clients Maps",
-		"description": "API para buscar estabelecimentos no Google Maps via Playwright (com site), salvar no PostgreSQL e listar resultados.\n\n**Pré-requisitos:**\n- Aplicação rodando (`mvnw spring-boot:run`)\n- Chromium instalado: `mvnw exec:java -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args=install chromium`\n\n**Variáveis:** `baseUrl`, `latitude`, `longitude`, `radiusMeters`, `location`",
+		"description": "API para buscar estabelecimentos no Google Maps via Places API, salvar no PostgreSQL e listar resultados.\n\n**Pré-requisitos:**\n- Aplicação rodando (`mvnw spring-boot:run`)\n- Variável `GOOGLE_MAPS_API_KEY` configurada\n\n**Variáveis:** `baseUrl`, `latitude`, `longitude`, `radiusMeters`, `location`",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"variable": [

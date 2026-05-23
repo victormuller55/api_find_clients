@@ -25,7 +25,7 @@ public class PlacesController {
 	}
 
 	/**
-	 * Busca estabelecimentos no Google Maps (Playwright), filtra os com site,
+	 * Busca estabelecimentos no Google Maps (Places API), salva no banco e retorna os novos.
 	 * salva no PostgreSQL e imprime no console.
 	 *
 	 * Exemplo:
