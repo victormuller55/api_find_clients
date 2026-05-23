@@ -1,0 +1,13 @@
+# Copie para application-local.properties (já está no .gitignore)
+
+spring.datasource.url=jdbc:postgresql://dpg-d88c9j0js32c73eurgr0-a.oregon-postgres.render.com:5432/db_clients_07r2
+spring.datasource.username=root
+spring.datasource.password=v94c4INL5Fa1zYKNspDhace2BVVDJ9OV
+
+google.maps.api-key=SUA_CHAVE_GOOGLE_PLACES_AQUI
+
+google.maps.default-latitude=-23.5505
+google.maps.default-longitude=-46.6333
+google.maps.default-radius-meters=5000
+
+server.port=8080

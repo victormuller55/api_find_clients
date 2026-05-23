@@ -1,0 +1,134 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "API Search Clients Maps",
+		"description": "API para buscar estabelecimentos no Google Maps via Playwright (com site), salvar no PostgreSQL e listar resultados.\n\n**Pré-requisitos:**\n- Aplicação rodando (`mvnw spring-boot:run`)\n- Chromium instalado: `mvnw exec:java -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args=install chromium`\n\n**Variáveis:** `baseUrl`, `latitude`, `longitude`, `radiusMeters`, `location`",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "latitude",
+			"value": "-23.5505"
+		},
+		{
+			"key": "longitude",
+			"value": "-46.6333"
+		},
+		{
+			"key": "radiusMeters",
+			"value": "5000"
+		},
+		{
+			"key": "location",
+			"value": "São Paulo, SP"
+		}
+	],
+	"item": [
+		{
+			"name": "Places",
+			"item": [
+				{
+					"name": "Buscar e salvar estabelecimentos (coordenadas padrão)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/places/scrape",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"places",
+								"scrape"
+							]
+						},
+						"description": "Busca restaurantes, barbearias, clínicas, mercadinhos e outros locais perto das coordenadas padrão do `application.properties`. Retorna apenas estabelecimentos **com site**, salva no banco e imprime no console do servidor."
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar e salvar estabelecimentos (coordenadas customizadas)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/places/scrape?latitude={{latitude}}&longitude={{longitude}}&radiusMeters={{radiusMeters}}&location={{location}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"places",
+								"scrape"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "{{latitude}}",
+									"description": "Latitude (ex: -23.5505)"
+								},
+								{
+									"key": "longitude",
+									"value": "{{longitude}}",
+									"description": "Longitude (ex: -46.6333)"
+								},
+								{
+									"key": "radiusMeters",
+									"value": "{{radiusMeters}}",
+									"description": "Raio da busca em metros (ex: 5000)"
+								},
+								{
+									"key": "location",
+									"value": "{{location}}",
+									"description": "Texto da região (ex: São Paulo, SP)"
+								}
+							]
+						},
+						"description": "Mesma busca do scrape, mas com latitude, longitude e raio informados na query string."
+					},
+					"response": []
+				},
+				{
+					"name": "Listar estabelecimentos salvos (com site)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/places",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"places"
+							]
+						},
+						"description": "Retorna todos os estabelecimentos com site já persistidos no PostgreSQL."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints de busca no Google Maps e listagem no banco."
+		}
+	]
+}
