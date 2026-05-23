@@ -21,43 +21,38 @@ public class DatabaseConfig {
 	public DataSource dataSource(Environment env) {
 		HikariConfig config = new HikariConfig();
 
-		String databaseUrl = env.getProperty("DATABASE_URL");
-		if (databaseUrl != null && !databaseUrl.isBlank()) {
+		String databaseUrl = firstNonBlank(env.getProperty("DATABASE_URL"), System.getenv("DATABASE_URL"));
+		if (databaseUrl != null && databaseUrl.startsWith("postgres")) {
 			DatabaseUrlParser.Parsed parsed = DatabaseUrlParser.parse(databaseUrl);
 			config.setJdbcUrl(parsed.jdbcUrl());
 			config.setUsername(parsed.username());
 			config.setPassword(parsed.password());
-			log.info("PostgreSQL via DATABASE_URL (Render)");
+			log.info("PostgreSQL via DATABASE_URL");
 		}
 		else {
 			String jdbcUrl = firstNonBlank(
-					env.getProperty("SPRING_DATASOURCE_URL"),
-					env.getProperty("spring.datasource.url"));
-
+					env.getProperty("spring.datasource.url"),
+					System.getenv("SPRING_DATASOURCE_URL"));
 			String username = firstNonBlank(
-					env.getProperty("SPRING_DATASOURCE_USERNAME"),
 					env.getProperty("spring.datasource.username"),
+					System.getenv("SPRING_DATASOURCE_USERNAME"),
 					"root");
-
 			String password = firstNonBlank(
-					env.getProperty("SPRING_DATASOURCE_PASSWORD"),
-					env.getProperty("DATABASE_PASSWORD"),
-					env.getProperty("spring.datasource.password"));
+					env.getProperty("spring.datasource.password"),
+					System.getenv("SPRING_DATASOURCE_PASSWORD"),
+					System.getenv("DATABASE_PASSWORD"));
 
 			if (jdbcUrl == null || jdbcUrl.isBlank()) {
-				throw new IllegalStateException(
-						"Configure DATABASE_URL (vincule o Postgres no Render) ou spring.datasource.url");
+				throw new IllegalStateException("Defina SPRING_DATASOURCE_URL no Render");
 			}
 			if (password == null || password.isBlank()) {
-				throw new IllegalStateException(
-						"Senha do PostgreSQL não definida. Vincule o banco (DATABASE_URL) "
-								+ "ou defina SPRING_DATASOURCE_PASSWORD / DATABASE_PASSWORD");
+				throw new IllegalStateException("Defina SPRING_DATASOURCE_PASSWORD no Render");
 			}
 
 			config.setJdbcUrl(jdbcUrl);
 			config.setUsername(username);
 			config.setPassword(password);
-			log.info("PostgreSQL via spring.datasource.*");
+			log.info("PostgreSQL via SPRING_DATASOURCE_*");
 		}
 
 		return new HikariDataSource(config);
